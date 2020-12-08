@@ -64,7 +64,11 @@ public class LayersTestCase {
         // injected by server in UndertowHttpManagementService
         "org.jboss.as.domain-http-error-context",
         // injected by logging
+        "org.apache.logging.log4j.api",
+        // injected by logging
         "org.jboss.logging.jul-to-slf4j-stub",
+        // injected by logging
+        "org.jboss.logmanager.log4j2",
         // injected by logging
         "org.slf4j.ext",
         // injected by logging
@@ -116,15 +120,18 @@ public class LayersTestCase {
             for(File f : installations) {
                 LayersTest.recursiveDelete(f.toPath());
             }
-            installations = new File(servletRoot).listFiles(File::isDirectory);
-            for(File f : installations) {
-                LayersTest.recursiveDelete(f.toPath());
+            if (servletRoot != null && servletRoot.length() > 0) {
+                installations = new File(servletRoot).listFiles(File::isDirectory);
+                for (File f : installations) {
+                    LayersTest.recursiveDelete(f.toPath());
+                }
             }
         }
     }
 
     @Test
     public void testServlet() throws Exception {
+        org.junit.Assume.assumeTrue("Servlet testing disabled", servletRoot != null && servletRoot.length() > 0);
         LayersTest.test(servletRoot, new HashSet<>(Arrays.asList(NOT_REFERENCED)),
                 new HashSet<>(Arrays.asList(NOT_USED)));
     }
@@ -139,9 +146,11 @@ public class LayersTestCase {
     @Test
     public void checkBannedModules() throws Exception {
         final HashMap<String, String> results = LayersTest.checkBannedModules(root, BANNED_MODULES_CONF);
-        HashMap<String, String> servletResults = LayersTest.checkBannedModules(servletRoot, BANNED_MODULES_CONF);
+        if (servletRoot != null && servletRoot.length() > 0) {
+            HashMap<String, String> servletResults = LayersTest.checkBannedModules(servletRoot, BANNED_MODULES_CONF);
 
-        results.putAll(servletResults);
+            results.putAll(servletResults);
+        }
         Assert.assertTrue("The following banned modules were provisioned " + results.toString(), results.isEmpty());
     }
 }

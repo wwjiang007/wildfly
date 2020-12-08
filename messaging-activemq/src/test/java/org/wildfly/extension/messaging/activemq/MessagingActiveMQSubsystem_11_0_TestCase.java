@@ -108,10 +108,9 @@ public class MessagingActiveMQSubsystem_11_0_TestCase extends AbstractSubsystemB
         return properties;
     }
 
-    @Test
     @Override
-    public void testSchemaOfSubsystemTemplates() throws Exception {
-        super.testSchemaOfSubsystemTemplates();
+    protected KernelServices standardSubsystemTest(String configId, boolean compareXml) throws Exception {
+        return super.standardSubsystemTest(configId, false);
     }
 
     @Test

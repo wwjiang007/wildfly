@@ -100,6 +100,13 @@ import org.wildfly.extension.messaging.activemq.jms.ExternalPooledConnectionFact
  * Domain extension that integrates Apache ActiveMQ 6.
  *
  * <dl>
+ * <dt><strong>Current</strong> - WildFly 22</dt>
+ *   <dd>
+ *     <ul>
+ *       <li>XML namespace: urn:jboss:domain:messaging-activemq:12.0
+ *       <li>Management model: 12.0.0
+ *     </ul>
+ *   </dd>
  * <dt><strong>Current</strong> - WildFly 21</dt>
  *   <dd>
  *     <ul>
@@ -234,6 +241,7 @@ public class MessagingExtension implements Extension {
 
     static final String RESOURCE_NAME = MessagingExtension.class.getPackage().getName() + ".LocalDescriptions";
 
+    protected static final ModelVersion VERSION_12_0_0 = ModelVersion.create(12, 0, 0);
     protected static final ModelVersion VERSION_11_0_0 = ModelVersion.create(11, 0, 0);
     protected static final ModelVersion VERSION_10_0_0 = ModelVersion.create(10, 0, 0);
     protected static final ModelVersion VERSION_9_0_0 = ModelVersion.create(9, 0, 0);
@@ -245,15 +253,16 @@ public class MessagingExtension implements Extension {
     protected static final ModelVersion VERSION_3_0_0 = ModelVersion.create(3, 0, 0);
     protected static final ModelVersion VERSION_2_0_0 = ModelVersion.create(2, 0, 0);
     protected static final ModelVersion VERSION_1_0_0 = ModelVersion.create(1, 0, 0);
-    private static final ModelVersion CURRENT_MODEL_VERSION = VERSION_11_0_0;
+    private static final ModelVersion CURRENT_MODEL_VERSION = VERSION_12_0_0;
 
-    private static final MessagingSubsystemParser_11_0 CURRENT_PARSER = new MessagingSubsystemParser_11_0();
+    private static final MessagingSubsystemParser_12_0 CURRENT_PARSER = new MessagingSubsystemParser_12_0();
 
     // ARTEMIS-2273 introduced audit logging at a info level which is rather verbose. We need to use static loggers
     // to ensure the log levels are set to WARN and there is a strong reference to the loggers. This hack will likely
     // be removed in the future.
     private static final Logger BASE_AUDIT_LOGGER;
     private static final Logger MESSAGE_AUDIT_LOGGER;
+    private static final Logger RESOURCE_AUDIT_LOGGER;
 
     static {
         // There is no guarantee that the configured loggers will contain the logger names even if they've been
@@ -271,6 +280,12 @@ public class MessagingExtension implements Extension {
         } else {
             MESSAGE_AUDIT_LOGGER = Logger.getLogger("org.apache.activemq.audit.message");
             MESSAGE_AUDIT_LOGGER.setLevel(Level.WARNING);
+        }
+        if (configuredLoggers.contains("org.apache.activemq.audit.resource")) {
+            RESOURCE_AUDIT_LOGGER = null;
+        } else {
+            RESOURCE_AUDIT_LOGGER = Logger.getLogger("org.apache.activemq.audit.resource");
+            RESOURCE_AUDIT_LOGGER.setLevel(Level.WARNING);
         }
     }
 
@@ -360,6 +375,7 @@ public class MessagingExtension implements Extension {
         context.setSubsystemXmlMapping(SUBSYSTEM_NAME, MessagingSubsystemParser_8_0.NAMESPACE, MessagingSubsystemParser_8_0::new);
         context.setSubsystemXmlMapping(SUBSYSTEM_NAME, MessagingSubsystemParser_9_0.NAMESPACE, MessagingSubsystemParser_9_0::new);
         context.setSubsystemXmlMapping(SUBSYSTEM_NAME, MessagingSubsystemParser_10_0.NAMESPACE, MessagingSubsystemParser_10_0::new);
-        context.setSubsystemXmlMapping(SUBSYSTEM_NAME, MessagingSubsystemParser_11_0.NAMESPACE, CURRENT_PARSER);
+        context.setSubsystemXmlMapping(SUBSYSTEM_NAME, MessagingSubsystemParser_11_0.NAMESPACE, MessagingSubsystemParser_11_0::new);
+        context.setSubsystemXmlMapping(SUBSYSTEM_NAME, MessagingSubsystemParser_12_0.NAMESPACE, CURRENT_PARSER);
     }
 }
