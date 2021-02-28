@@ -98,6 +98,7 @@ import org.jboss.metadata.web.spec.TagMetaData;
 import org.jboss.metadata.web.spec.TldMetaData;
 import org.jboss.metadata.web.spec.VariableMetaData;
 import org.jboss.modules.Module;
+import org.jboss.msc.service.DuplicateServiceException;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController.Mode;
 import org.jboss.msc.service.ServiceName;
@@ -451,7 +452,11 @@ public class UndertowDeploymentProcessor implements DeploymentUnitProcessor, Fun
             codecConfigurator.configure(support).build(serviceTarget).install();
         }
 
-        infoBuilder.install();
+        try {
+            infoBuilder.install();
+        } catch (DuplicateServiceException e) {
+            throw UndertowLogger.ROOT_LOGGER.duplicateHostContextDeployments(deploymentInfoServiceName, e.getMessage());
+        }
 
         final UndertowDeploymentService service = new UndertowDeploymentService(injectionContainer, true);
         final ServiceBuilder<UndertowDeploymentService> builder = serviceTarget.addService(deploymentServiceName, service)
@@ -472,7 +477,7 @@ public class UndertowDeploymentProcessor implements DeploymentUnitProcessor, Fun
 
         deploymentUnit.addToAttachmentList(Attachments.DEPLOYMENT_COMPLETE_SERVICES, deploymentServiceName);
 
-        // adding JACC service
+        // adding Jakarta Authorization service
         final boolean elytronJacc = capabilitySupport.hasCapability(ELYTRON_JACC_CAPABILITY_NAME);
         final boolean legacyJacc = !elytronJacc && legacySecurityInstalled(deploymentUnit);
         if(legacyJacc || elytronJacc) {

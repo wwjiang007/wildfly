@@ -3220,13 +3220,22 @@ public interface EjbLogger extends BasicLogger {
     @Message(id = 519, value = "Invalid unmarshalling filter specfication %s; specifications must describe class or package name matching patterns")
     IllegalArgumentException invalidFilterSpec(String spec);
 
-    @Message(id = 520, value = "Legacy host does not support multiple values for attributes: %s")
-    String multipleValuesNotSupported(Set<String> attributes);
-
     @Message(id = 521, value = "Some classes referenced by annotation: %s in class: %s are missing.")
     DeploymentUnitProcessingException missingClassInAnnotation(String anCls, String resCls);
 
     @LogMessage(level = WARN)
     @Message(id = 522, value = "The default pool name %s could not be resolved from its value: %s")
     void defaultPoolExpressionCouldNotBeResolved(String defaultPoolName, String defaultPoolValue);
+
+    @LogMessage(level = WARN)
+    @Message(id = 523, value = "Timer %s has not been deployed")
+    void timerNotDeployed(String timer);
+
+    @Message(id = 524, value = "Timer %s cannot be added")
+    RuntimeException timerCannotBeAdded(TimerImpl timer);
+
+    @LogMessage(level = WARN)
+    @Message(id = 525, value = "The 'mappedName' in EJB annotations is not supported. Value of '%s' for EJB '%s' will be ignored.")
+    void mappedNameNotSupported(String mappedName, String ejb);
+
 }
