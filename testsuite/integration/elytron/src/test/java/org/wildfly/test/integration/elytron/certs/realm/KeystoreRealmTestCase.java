@@ -102,7 +102,7 @@ public class KeystoreRealmTestCase extends CommonBase {
     protected static final String PASSWORD = "Elytron";
     private static final char[] PASSWORD_CHAR = PASSWORD.toCharArray();
     private static final String CA_JKS_LOCATION = "." + File.separator + "target" + File.separator + "test-classes" +
-            File.separator + "ca" + File.separator + "jks";
+            File.separator + "ca" + File.separator + "jks-keystoreRealmTestCase";
     private static final File WORKING_DIR_CA = new File(CA_JKS_LOCATION);
     private static final File TRUST_FILE = new File(WORKING_DIR_CA, "ca.truststore");
     private static final File KEYSTORE_FILE = new File(WORKING_DIR_CA, "server.keystore");
@@ -113,7 +113,7 @@ public class KeystoreRealmTestCase extends CommonBase {
     @ArquillianResource
     protected URL webAppURL;
 
-    @Deployment
+    @Deployment(testable = false)
     protected static WebArchive createDeployment() {
         final Package currentPackage = KeystoreRealmTestCase.class.getPackage();
         return ShrinkWrap.create(WebArchive.class, KeystoreRealmTestCase.class.getSimpleName() + ".war")

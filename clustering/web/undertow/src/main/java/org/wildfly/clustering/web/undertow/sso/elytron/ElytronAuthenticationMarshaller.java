@@ -26,7 +26,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.infinispan.protostream.impl.WireFormat;
+import org.infinispan.protostream.descriptors.WireType;
 import org.wildfly.clustering.marshalling.protostream.ProtoStreamMarshaller;
 import org.wildfly.clustering.marshalling.protostream.ProtoStreamReader;
 import org.wildfly.clustering.marshalling.protostream.ProtoStreamWriter;
@@ -38,8 +38,8 @@ import org.wildfly.clustering.marshalling.protostream.ProtoStreamWriter;
 public class ElytronAuthenticationMarshaller implements ProtoStreamMarshaller<ElytronAuthentication> {
 
     private static final int MECHANISM_INDEX = 1;
-    private static final int NAME_INDEX = 2;
-    private static final int PROGRAMMATIC_INDEX = 3;
+    private static final int NON_PROGRAMMIC_NAME_INDEX = 2;
+    private static final int PROGRAMMATIC_NAME_INDEX = 3;
 
     private static final String DEFAULT_MECHANISM = HttpServletRequest.FORM_AUTH;
 
@@ -48,21 +48,19 @@ public class ElytronAuthenticationMarshaller implements ProtoStreamMarshaller<El
         String mechanism = DEFAULT_MECHANISM;
         String name = null;
         boolean programmatic = false;
-        boolean reading = true;
-        while (reading) {
+        while (!reader.isAtEnd()) {
             int tag = reader.readTag();
-            switch (WireFormat.getTagFieldNumber(tag)) {
+            switch (WireType.getTagFieldNumber(tag)) {
                 case MECHANISM_INDEX:
                     mechanism = reader.readString();
                     break;
-                case NAME_INDEX:
+                case PROGRAMMATIC_NAME_INDEX:
+                    programmatic = true;
+                case NON_PROGRAMMIC_NAME_INDEX:
                     name = reader.readString();
                     break;
-                case PROGRAMMATIC_INDEX:
-                    programmatic = reader.readBool();
-                    break;
                 default:
-                    reading = (tag != 0) && reader.skipField(tag);
+                    reader.skipField(tag);
             }
         }
         return new ElytronAuthentication(mechanism, programmatic, name);
@@ -76,11 +74,7 @@ public class ElytronAuthenticationMarshaller implements ProtoStreamMarshaller<El
         }
         String name = auth.getName();
         if (name != null) {
-            writer.writeString(NAME_INDEX, name);
-        }
-        boolean programmatic = auth.isProgrammatic();
-        if (programmatic) {
-            writer.writeBool(PROGRAMMATIC_INDEX, programmatic);
+            writer.writeString(auth.isProgrammatic() ? PROGRAMMATIC_NAME_INDEX : NON_PROGRAMMIC_NAME_INDEX, name);
         }
     }
 

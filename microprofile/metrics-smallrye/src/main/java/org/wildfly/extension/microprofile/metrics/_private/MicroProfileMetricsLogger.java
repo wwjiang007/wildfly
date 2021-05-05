@@ -49,7 +49,7 @@ public interface MicroProfileMetricsLogger extends BasicLogger {
      * Logs an informational message indicating the subsystem is being activated.
      */
     @LogMessage(level = INFO)
-    @Message(id = 1, value = "Activating Eclipse MicroProfile Metrics Subsystem")
+    @Message(id = 1, value = "Activating MicroProfile Metrics Subsystem")
     void activatingSubsystem();
 
 
@@ -67,4 +67,7 @@ public interface MicroProfileMetricsLogger extends BasicLogger {
     // no longer used
     // @Message(id = 5, value = "Metric attribute %s on %s is undefined and will not be exposed.")
     // IllegalStateException undefinedMetric(String attributeName, PathAddress address);
+
+    @Message(id = 6, value = "The metric was unavailable")
+    IllegalStateException metricUnavailable();
 }

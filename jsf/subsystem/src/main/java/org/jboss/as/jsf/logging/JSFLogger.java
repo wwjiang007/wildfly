@@ -111,14 +111,18 @@ public interface JSFLogger extends BasicLogger {
     DeploymentUnitProcessingException jsfInjectionFailed(String slotName, @Cause Throwable cause);
 
     @LogMessage(level = DEBUG)
-    @Message(id = 17, value = "JSF 1.2 classes detected. Using org.jboss.as.jsf.injection.weld.legacy.WeldApplicationFactoryLegacy.")
+    @Message(id = 17, value = "Faces 1.2 classes detected. Using org.jboss.as.jsf.injection.weld.legacy.WeldApplicationFactoryLegacy.")
     void loadingJsf12();
 
     @LogMessage(level = DEBUG)
-    @Message(id = 18, value = "JSF 1.2 classes not detected. Using org.jboss.as.jsf.injection.weld.WeldApplicationFactory.")
+    @Message(id = 18, value = "Faces 1.2 classes not detected. Using org.jboss.as.jsf.injection.weld.WeldApplicationFactory.")
     void loadingJsf2x();
 
     @LogMessage(level = INFO)
     @Message(id = 19, value = "Jakarta Server Faces artifact %s with class %s has no default constructor so it will not be considered for injection")
     void jsfArtifactNoDefaultConstructor(String type, String className);
+
+    @LogMessage(level = WARN)
+    @Message(id = 20, value = "Lazy bean validation was enabled. This can result in missing @PreDestroy events when distributed web sessions expire.")
+    void lazyBeanValidationEnabled();
 }

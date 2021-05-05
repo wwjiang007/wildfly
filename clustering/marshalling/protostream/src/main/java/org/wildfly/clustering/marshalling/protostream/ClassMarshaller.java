@@ -26,7 +26,7 @@ import java.io.IOException;
 
 import org.infinispan.protostream.BaseMarshaller;
 import org.infinispan.protostream.ImmutableSerializationContext;
-import org.infinispan.protostream.impl.WireFormat;
+import org.infinispan.protostream.descriptors.WireType;
 
 /**
  * Generic marshaller for instances of {@link Class}.
@@ -44,11 +44,15 @@ public class ClassMarshaller implements ProtoStreamMarshaller<Class<?>> {
     @Override
     public Class<?> readFrom(ProtoStreamReader reader) throws IOException {
         Class<?> result = Object.class;
-        int tag = reader.readTag();
-        if (tag != 0) {
-            int index = WireFormat.getTagFieldNumber(tag);
+        while (!reader.isAtEnd()) {
+            int tag = reader.readTag();
+            int index = WireType.getTagFieldNumber(tag);
             Field<Class<?>> field = index == this.field.getIndex() ? this.field : ClassField.fromIndex(index);
-            result = field.getMarshaller().readFrom(reader);
+            if (field != null) {
+                result = field.getMarshaller().readFrom(reader);
+            } else {
+                reader.skipField(tag);
+            }
         }
         return result;
     }

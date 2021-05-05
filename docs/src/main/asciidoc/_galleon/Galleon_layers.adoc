@@ -330,7 +330,7 @@ link:#gal.elytron[elytron] +
 link:#gal.base-server[base-server] +
 
 |[[gal.messaging-activemq]]messaging-activemq
-|Support for connections to a remote JMS broker.
+|Support for connections to a remote Jakarta Messaging broker.
 |
 link:#gal.resource-adapters[resource-adapters] +
 
@@ -436,7 +436,7 @@ link:#gal.microprofile-config[microprofile-config] +
 link:#gal.base-server[base-server] +
 
 |[[gal.remote-activemq]]remote-activemq
-|Support for connections to a remote Apache Activemq Artemis JMS broker.
+|Support for connections to a remote Apache Activemq Artemis Jakarta Messaging broker.
 |
 link:#gal.resource-adapters[resource-adapters] +
 
@@ -452,7 +452,7 @@ link:#gal.io[io] +
 link:#gal.base-server[base-server] +
 
 |[[gal.resource-adapters]]resource-adapters
-|Support for deployment of JCA adapters.
+|Support for deployment of Jakarta Connectors resource adapters.
 |
 link:#gal.transactions[transactions] +
 
@@ -536,3 +536,4 @@ link:#gal.web-server[web-server] +
 |===
 
 NOTE: References in this document to Java Persistence API(JPA) refer to the Jakarta Persistence unless otherwise noted.
+      References in this document to Enterprise JavaBeans(EJB) refer to the Jakarta Enterprise Beans unless otherwise noted.

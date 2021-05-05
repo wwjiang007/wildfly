@@ -23,12 +23,11 @@
 package org.wildfly.clustering.marshalling.protostream;
 
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 import java.lang.reflect.Proxy;
 
 import org.infinispan.protostream.BaseMarshaller;
 import org.infinispan.protostream.ImmutableSerializationContext;
-import org.infinispan.protostream.impl.WireFormat;
+import org.infinispan.protostream.descriptors.WireType;
 
 /**
  * Marshaller for an {@link Any} object.
@@ -45,19 +44,19 @@ public enum AnyMarshaller implements ProtoStreamMarshaller<Any> {
     @Override
     public Any readFrom(ProtoStreamReader reader) throws IOException {
         Object value = null;
-        int tag = reader.readTag();
-        if (tag != 0) {
-            AnyField field = AnyField.fromIndex(WireFormat.getTagFieldNumber(tag));
-            if (field == null) {
-                throw new StreamCorruptedException(String.valueOf(tag));
-            }
+        while (!reader.isAtEnd()) {
+            int tag = reader.readTag();
+            AnyField field = AnyField.fromIndex(WireType.getTagFieldNumber(tag));
+            if (field != null) {
+                value = field.getMarshaller().readFrom(reader);
 
-            value = field.getMarshaller().readFrom(reader);
-
-            if (field == AnyField.REFERENCE) {
-                value = ProtoStreamReaderContext.INSTANCE.get().findByReference((Integer) value);
+                if (field == AnyField.REFERENCE) {
+                    value = ProtoStreamReaderContext.INSTANCE.get().findByReference((Integer) value);
+                } else {
+                    ProtoStreamReaderContext.INSTANCE.get().setReference(value);
+                }
             } else {
-                ProtoStreamReaderContext.INSTANCE.get().setReference(value);
+                reader.skipField(tag);
             }
         }
         return new Any(value);
@@ -70,7 +69,7 @@ public enum AnyMarshaller implements ProtoStreamMarshaller<Any> {
             // If we already wrote this object to the stream, write the object reference
             Integer referenceId = ProtoStreamWriterContext.INSTANCE.get().getReferenceId(object);
 
-            AnyField field = (referenceId == null) ? getField(writer.getSerializationContext(), object) : AnyField.REFERENCE;
+            AnyField field = (referenceId == null) ? getField(writer, object) : AnyField.REFERENCE;
             writer.writeTag(field.getIndex(), field.getMarshaller().getWireType());
             field.getMarshaller().writeTo(writer, (referenceId == null) ? object : referenceId);
 
@@ -81,7 +80,8 @@ public enum AnyMarshaller implements ProtoStreamMarshaller<Any> {
         }
     }
 
-    private static AnyField getField(ImmutableSerializationContext context, Object value) {
+    private static AnyField getField(ProtoStreamWriter writer, Object value) {
+        ImmutableSerializationContext context = writer.getSerializationContext();
         Class<?> valueClass = value.getClass();
         AnyField field = AnyField.fromJavaType(valueClass);
         if (field != null) return field;
@@ -108,7 +108,7 @@ public enum AnyMarshaller implements ProtoStreamMarshaller<Any> {
             return AnyField.PROXY;
         }
 
-        BaseMarshaller<?> marshaller = context.getMarshaller(valueClass);
+        BaseMarshaller<?> marshaller = writer.findMarshaller(valueClass);
         return hasTypeId(context, marshaller) ? AnyField.IDENTIFIED_OBJECT : AnyField.NAMED_OBJECT;
     }
 

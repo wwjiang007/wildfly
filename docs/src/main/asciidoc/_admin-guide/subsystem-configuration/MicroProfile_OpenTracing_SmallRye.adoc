@@ -1,7 +1,7 @@
 [[MicroProfile_OpenTracing_SmallRye]]
 = MicroProfile OpenTracing Subsystem Configuration
 
-Support for https://microprofile.io/project/eclipse/microprofile-opentracing[Eclipse MicroProfile OpenTracing] is
+Support for https://microprofile.io/project/eclipse/microprofile-opentracing[MicroProfile OpenTracing] is
 provided as a Tech Preview feature by the _microprofile-opentracing-smallrye_ subsystem.
 
 [[required-extension-microprofile-opentracing-smallrye]]
@@ -79,17 +79,17 @@ by setting the annotation's value to `false`. Similarly, a custom operation name
 Note that Jakarta Contexts and Dependency Injection support for the deployment is required in order to activate the MicroProfile OpenTracing support. A simple
 Jakarta RESTful Web Services application with no Jakarta Contexts and Dependency Injection support will *not* be traced.
 
-Managed beans with multiple facets, such as EJBs, can also be traced by annotating them with `@Traced`, but with
+Managed beans with multiple facets, such as Jakarta Enterprise Beans, can also be traced by annotating them with `@Traced`, but with
 limitations. For instance, asynchronous invocations will yield a new trace, instead of having the span to join an
 existing trace.
 
 == Component Reference
 
-The Eclipse MicroProfile OpenTracing is implemented by the SmallRye OpenTracing project.
+The MicroProfile OpenTracing implementation is provided by the SmallRye OpenTracing project.
 
 ****
 
-* https://microprofile.io/project/eclipse/microprofile-opentracing[Eclipse MicroProfile OpenTracing]
+* https://microprofile.io/project/eclipse/microprofile-opentracing[MicroProfile OpenTracing]
 * https://github.com/smallrye/smallrye-opentracing/[SmallRye OpenTracing]
 
 ****
