@@ -52,6 +52,7 @@ import org.jboss.as.controller.operations.common.Util;
 import org.jboss.as.test.integration.security.common.Utils;
 import org.jboss.as.test.shared.FileUtils;
 import org.jboss.as.test.shared.ServerReload;
+import org.jboss.as.test.shared.TimeoutUtil;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -198,7 +199,7 @@ public class DatabaseTimerServiceMultiNodeTestCase {
         try {
             RemoteTimedBean clientBean = (RemoteTimedBean) clientContext.lookup(ARCHIVE_NAME + "/" + TimedObjectTimerServiceBean.class.getSimpleName() + "!" + RemoteTimedBean.class.getName());
             Set<String> names = new HashSet<>();
-            long time = System.currentTimeMillis() + TIMER_DELAY;
+            long time = System.currentTimeMillis() + TimeoutUtil.adjust(TIMER_DELAY);
             for (int i = 0; i < TIMER_COUNT; ++i) {
                 String name = "timer" + i;
                 clientBean.scheduleTimer(time, name);
@@ -210,8 +211,6 @@ public class DatabaseTimerServiceMultiNodeTestCase {
                 Collector serverBean = (Collector) remoteContext.lookup(ARCHIVE_NAME + "/" + CollectionSingleton.class.getSimpleName() + "!" + Collector.class.getName());
                 List<TimerData> res = serverBean.collect(TIMER_COUNT);
                 Assert.assertEquals("Expected " + TIMER_COUNT + " was " + res.size() + " " + res, TIMER_COUNT, res.size());
-                boolean server = false;
-                boolean client = false;
                 final Set<String> newNames = new HashSet<>(names);
                 for (TimerData r : res) {
                     if (!newNames.remove(r.getInfo())) {
@@ -221,14 +220,7 @@ public class DatabaseTimerServiceMultiNodeTestCase {
                             throw new RuntimeException("Timer " + r.getInfo() + " run twice " + res);
                         }
                     }
-                    if (r.getNode().equals("client")) {
-                        client = true;
-                    } else if (r.getNode().equals("server")) {
-                        server = true;
-                    }
                 }
-                Assert.assertTrue(client);
-                Assert.assertTrue(server);
             } finally {
                 remoteContext.close();
             }

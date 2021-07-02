@@ -9,47 +9,29 @@ import "java.lang.proto";
 /**
  * @TypeId(10)
  */
-message EmptyEnumeration {
+message EmptyList {
 }
 
 /**
  * @TypeId(11)
  */
-message EmptyIterator {
+message EmptyMap {
 }
 
 /**
  * @TypeId(12)
  */
-message EmptyList {
+message EmptyNavigableMap {
 }
 
 /**
  * @TypeId(13)
  */
-message EmptyListIterator {
-}
-
-/**
- * @TypeId(14)
- */
-message EmptyMap {
-}
-
-/**
- * @TypeId(15)
- */
-message EmptyNavigableMap {
-}
-
-/**
- * @TypeId(16)
- */
 message EmptyNavigableSet {
 }
 
 /**
- * @TypeId(17)
+ * @TypeId(14)
  */
 message EmptySet {
 }
@@ -57,14 +39,14 @@ message EmptySet {
 // Singleton collections
 
 /**
- * @TypeId(20)
+ * @TypeId(15)
  */
 message SingletonList {
 	optional	bytes	value	= 1;
 }
 
 /**
- * @TypeId(21)
+ * @TypeId(16)
  */
 message SingletonMap {
 	optional	bytes	key	= 1;
@@ -72,10 +54,116 @@ message SingletonMap {
 }
 
 /**
- * @TypeId(22)
+ * @TypeId(17)
  */
 message SingletonSet {
 	optional	bytes	value	= 1;
+}
+
+// Synchronized collections
+
+/**
+ * @TypeId(20)
+ */
+message SynchronizedCollection {
+	optional	bytes	value	 = 1;
+}
+
+/**
+ * @TypeId(21)
+ */
+message SynchronizedList {
+	optional	bytes	value	 = 1;
+}
+
+/**
+ * @TypeId(22)
+ */
+message SynchronizedMap {
+	optional	bytes	value	 = 1;
+}
+
+message SynchronizedNavigableMap {
+	optional	bytes	value	 = 1;
+}
+
+message SynchronizedNavigableSet {
+	optional	bytes	value	 = 1;
+}
+
+/**
+ * @TypeId(23)
+ */
+message SynchronizedRandomAccessList {
+	optional	bytes	value	 = 1;
+}
+
+/**
+ * @TypeId(24)
+ */
+message SynchronizedSet {
+	optional	bytes	value	 = 1;
+}
+
+message SynchronizedSortedMap {
+	optional	bytes	value	 = 1;
+}
+
+message SynchronizedSortedSet {
+	optional	bytes	value	 = 1;
+}
+
+// Unmodifiable collections
+
+/**
+ * @TypeId(25)
+ */
+message UnmodifiableCollection {
+	optional	bytes	collection	 = 1;
+}
+
+/**
+ * @TypeId(26)
+ */
+message UnmodifiableList {
+	optional	bytes	collection	 = 1;
+}
+
+/**
+ * @TypeId(27)
+ */
+message UnmodifiableMap {
+	optional	bytes	collection	 = 1;
+}
+
+message UnmodifiableNavigableMap {
+	optional	bytes	collection	 = 1;
+}
+
+message UnmodifiableNavigableSet {
+	optional	bytes	collection	 = 1;
+}
+
+/**
+ * @TypeId(28)
+ */
+message UnmodifiableRandomAccessList {
+	optional	bytes	collection	 = 1;
+}
+
+/**
+ * @TypeId(29)
+ */
+message UnmodifiableSet {
+	optional	bytes	collection	 = 1;
+}
+
+message UnmodifiableSortedMap {
+	optional	bytes	collection	 = 1;
+}
+
+message UnmodifiableSortedSet {
+	optional	bytes	collection	 = 1;
 }
 
 // Collections
